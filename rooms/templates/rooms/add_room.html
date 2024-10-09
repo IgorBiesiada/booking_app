@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}addpage{% endblock %}
+
+{% block container %}
+
+    <h1>Dodaj salę</h1>
+
+        <form method="post" action="{% url 'rooms:add-room' %}">
+            {% csrf_token %}
+            <div class="mb-3">
+                <label for="room-name" class="form-label">Nazwa Sali</label>
+                <input type="text" name="room-name" class="form-control" id="room-name" required>
+                <div id="emailHelp" class="form-text">Nazwa sali nie może być pusta</div>
+            </div>
+            <div class="mb-3">
+                <label for="room-capacity" class="form-label">Pojemność Sali</label>
+                <input type="number" name="room-capacity" class="form-control" id="room-capacity" required>
+            </div>
+            <div class="mb-3 form-check">
+                <label class="form-label">Dostępność Rzutnika</label><br>
+                <input type="checkbox" name="room-projector" class="form-check-input" id="room-projector">
+                <label class="form-check-label" for="room-projector">Tak</label>
+            </div>
+            <button type="submit" class="btn btn-primary">Dodaj salę</button>
+        </form>
+
+{% endblock %}

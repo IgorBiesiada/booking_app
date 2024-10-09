@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Room Page{% endblock %}
+
+{% block container %}
+    <h1>List of Rooms</h1>
+
+    {% for room in rooms %}
+        <div class="card mb-3">
+          <div class="card-header">
+            {{ room.room_name }}
+          </div>
+          <div class="card-body">
+            <h5 class="card-title">Liczba miejsc: {{ room.room_capacity }}</h5>
+            <p class="card-text"> Dostępność rzutnika: {{ room.projector_available|yesno:"Tak,Nie" }}</p>
+            <form method="post" action="{% url 'rooms:delete-room' room.id %}">
+              {% csrf_token %}
+                <button type="submit" class="btn btn-primary">Usuń</button>
+            </form>
+          </div>
+        </div>
+    {% empty %}
+        <p>Brak pokoi do wyświetlenia.</p>
+    {% endfor %}
+{% endblock %}

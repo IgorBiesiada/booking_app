@@ -7,3 +7,6 @@ venv
 .env
 
 db.sqlite3
+
+media/*
+!media/.gitkeep
