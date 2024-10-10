@@ -14,10 +14,16 @@
           <div class="card-body">
             <h5 class="card-title">Liczba miejsc: {{ room.room_capacity }}</h5>
             <p class="card-text"> Dostępność rzutnika: {{ room.projector_available|yesno:"Tak,Nie" }}</p>
-            <form method="post" action="{% url 'rooms:delete-room' room.id %}">
-              {% csrf_token %}
+            <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+              <form method="post" action="{% url 'rooms:delete-room' room.id %}">
+                  {% csrf_token %}
                 <button type="submit" class="btn btn-primary">Usuń</button>
-            </form>
+                </form>
+                <form method="get" action="{% url 'rooms:update-room' room.id %}">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-primary">Edytuj</button>
+                </form>
+          </div>
           </div>
         </div>
     {% empty %}

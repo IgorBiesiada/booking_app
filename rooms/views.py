@@ -1,6 +1,8 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
+from django.urls import reverse_lazy
 from django.views import View
-from django.views.generic import ListView
+from django.views.generic import ListView, UpdateView
+from django.contrib import messages
 
 from . import models
 from .models import Room
@@ -38,3 +40,28 @@ class DeleteRoomView(View):
         room = Room.objects.get(id=room_id)
         room.delete()
         return redirect('rooms:room-list')
+
+class RoomModifyView(UpdateView):
+    model = models.Room
+    fields = ('room_name', 'room_capacity', 'projector_available')
+    template_name = 'rooms/update_form.html'
+    success_url = reverse_lazy('rooms:room-list')
+
+    def get_object(self, queryset=None):
+        pk = self.kwargs.get('id')
+        return get_object_or_404(Room, id=pk)
+
+
+    def form_valid(self, form):
+        room_name = form.cleaned_data['room_name']
+        room_capacity = form.cleaned_data['room_capacity']
+
+        if Room.objects.filter(room_name=room_name).exclude(id=self.object.id).exists():
+            form.add_error('room_name', 'Pokój o tej nazwie istnieje')
+            return self.form_invalid(form)
+
+        if room_capacity <= 0:
+            form.add_error('room_capacity', 'Liczba miejsc musi być większa niz 0')
+
+        messages.success(self.request, 'Aktualizacja udana')
+        return super().form_valid(form)

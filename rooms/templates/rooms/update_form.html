@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Edit form{% endblock %}
+
+
+{% block container %}
+    <h1>Edycja</h1>
+
+        <form method="post" action="{% url 'rooms:update-room' id=room.id %}">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <input type="submit" value="Update">
+        </form>
+
+
+{% endblock %}
