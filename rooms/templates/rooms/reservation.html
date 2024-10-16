@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}addpage{% endblock %}
+
+{% block container %}
+
+    <h1>Rezerwacja</h1>
+
+    <h2>Pokój {{ room.room_name }}</h2>
+    <form method="post">
+        {% csrf_token %}
+        <div class="mb-3">
+            <label for="reservation-date">Wybierz datę rezerwacji:</label>
+            <input type="date" id="reservation-date" name="reservation-date" class="form-control" required>
+        </div>
+        <div class="mb-3">
+            <label for="comment">Komentarz (opcjonalny):</label>
+            <textarea id="comment" name="comment" class="form-control"></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary">Zarezerwuj</button>
+    </form>
+
+{% endblock %}

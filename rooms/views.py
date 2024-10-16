@@ -1,11 +1,14 @@
+import datetime
+from django.urls import reverse
+
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse_lazy
 from django.views import View
-from django.views.generic import ListView, UpdateView
+from django.views.generic import ListView, UpdateView, DeleteView, DetailView
 from django.contrib import messages
 
 from . import models
-from .models import Room
+from . models import Room, Reservation
 
 
 class AddRoomView(View):
@@ -24,7 +27,7 @@ class AddRoomView(View):
         if capacity <= 0:
             return render(request, 'rooms/add_room.html', context={'error': 'Pojemność sali nie moze byc ujemna'})
         if Room.objects.filter(room_name=name).first():
-            return render(request, 'rooms/add_room.html', context={'error': 'Sala o podanej nazwie nie istnieje'})
+            return render(request, 'rooms/add_room.html', context={'error': 'Sala o podanej nazwie już istnieje'})
 
         Room.objects.create(room_name=name, room_capacity=capacity, projector_available=projector)
         return redirect('rooms:room-list')
@@ -62,6 +65,43 @@ class RoomModifyView(UpdateView):
 
         if room_capacity <= 0:
             form.add_error('room_capacity', 'Liczba miejsc musi być większa niz 0')
+            return self.form_invalid(form)
 
         messages.success(self.request, 'Aktualizacja udana')
         return super().form_valid(form)
+
+class ReservationView(View):
+    def get(self, request, room_id):
+        room = Room.objects.get(id=room_id)
+        reservations = room.reservations.filter(date__gte=str(datetime.date.today())).order_by('date')
+        return render(request, 'rooms/reservation.html', {'room': room, 'reservations': reservations})
+
+    def post(self, request, room_id):
+        room = Room.objects.get(id=room_id)
+        date = request.POST.get('reservation-date')
+        comment = request.POST.get('comment')
+
+        reservations = room.reservations.filter(date__gte=str(datetime.date.today())).order_by('date')
+
+        if not date:
+            return render(request, 'rooms/reservation.html',
+                          context={'room': room, 'reservations': reservations, 'error': 'Nie podano daty rezerwacji.'})
+
+        if Reservation.objects.filter(room=room, date=date):
+            return render(request, 'rooms/reservation.html', context={'room': room, 'reservations': reservations, 'error': 'Sala jest juz zarezerwowana'})
+
+        reservation_date = datetime.datetime.strptime(date, "%Y-%m-%d").date()
+
+        if reservation_date < datetime.date.today():
+            return render(request, 'rooms/reservation.html', context={'room': room, 'reservations': reservations, 'error': 'data jest z przeszłości'})
+
+        Reservation.objects.create(room=room, date=date, comment=comment)
+        return redirect('rooms:room-list')
+
+class DetailRoomView(View):
+    def get(self, request, room_id):
+        room = Room.objects.get(id=room_id)
+        reservations = room.reservations.filter(date__gte=str(datetime.date.today())).order_by('date')
+        return render(request, 'rooms/detailed_view.html', context={'room': room, 'reservations': reservations})
+
+

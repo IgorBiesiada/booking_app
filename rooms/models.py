@@ -18,10 +18,10 @@ class Room(models.Model):
         return super().save(*args, **kwargs)
 
 class Reservation(models.Model):
-    date = models.DateTimeField(auto_now_add=True)
-    room_id = models.ForeignKey(Room, on_delete=models.CASCADE)
-    comment = models.TextField(max_length=255)
+    date = models.DateField()
+    room = models.ForeignKey(Room, on_delete=models.CASCADE, related_name='reservations')
+    comment = models.TextField(null=True)
 
     class Meta:
-        unique_together = ('room_id', 'date')
+        unique_together = ('room', 'date')
 

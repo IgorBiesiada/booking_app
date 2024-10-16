@@ -9,7 +9,7 @@
     {% for room in rooms %}
         <div class="card mb-3">
           <div class="card-header">
-            {{ room.room_name }}
+              <a href="{% url 'rooms:room-detail' room.id %}" class="card-text"> {{ room.room_name }} </a>
           </div>
           <div class="card-body">
             <h5 class="card-title">Liczba miejsc: {{ room.room_capacity }}</h5>
@@ -22,6 +22,10 @@
                 <form method="get" action="{% url 'rooms:update-room' room.id %}">
                 {% csrf_token %}
                 <button type="submit" class="btn btn-primary">Edytuj</button>
+                </form>
+                <form method="get" action="{% url 'rooms:reservation' room.id %}">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-primary">Rezerwacja</button>
                 </form>
           </div>
           </div>
