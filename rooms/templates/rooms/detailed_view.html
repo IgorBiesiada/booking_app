@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% load static %}
 
-{% block title %}Szczegóły Pokoju{% endblock %}
+{% block title %}Room details{% endblock %}
 
 {% block container %}
 <div class="card">
@@ -13,22 +13,22 @@
         <p>Ilość miejsc: {{ room.room_capacity }}</p>
         <p>Dostępność rzutnika: {{ room.projector_available }}</p>
         {% for reservation in reservations %}
-            <p>Data: {{ reservation.date }}</p>
+            <p>Data rezerwacji: {{ reservation.date }}</p>
             <p>Komentarz: {{ reservation.comment }}</p>
         {% endfor %}
       <footer class="blockquote-footer">
            <div class="d-grid gap-2 d-md-flex justify-content-md-end">
                     <form method="post" action="{% url 'rooms:delete-room' room.id %}">
                     {% csrf_token %}
-                    <button type="submit" class="btn btn-primary">Usuń</button>
+                    <button type="submit" class="btn btn-primary">Delete</button>
                     </form>
                     <form method="get" action="{% url 'rooms:update-room' room.id %}">
                     {% csrf_token %}
-                    <button type="submit" class="btn btn-primary">Edytuj</button>
+                    <button type="submit" class="btn btn-primary">Edit</button>
                     </form>
                     <form method="get" action="{% url 'rooms:reservation' room.id %}">
                     {% csrf_token %}
-                    <button type="submit" class="btn btn-primary">Rezerwacja</button>
+                    <button type="submit" class="btn btn-primary">Reservation</button>
                     </form>
            </div>
           

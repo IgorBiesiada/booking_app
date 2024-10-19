@@ -5,7 +5,7 @@
 
 
 {% block container %}
-    <h1>Edycja</h1>
+    <h1>Edit room</h1>
 
         <form method="post" action="{% url 'rooms:update-room' id=room.id %}">
             {% csrf_token %}

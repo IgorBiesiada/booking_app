@@ -11,14 +11,19 @@
     <form method="post">
         {% csrf_token %}
         <div class="mb-3">
-            <label for="reservation-date">Wybierz datę rezerwacji:</label>
+            <label for="reservation-date">Select your booking date:</label>
             <input type="date" id="reservation-date" name="reservation-date" class="form-control" required>
         </div>
         <div class="mb-3">
-            <label for="comment">Komentarz (opcjonalny):</label>
+            <label for="comment">Comment (optional):</label>
             <textarea id="comment" name="comment" class="form-control"></textarea>
         </div>
-        <button type="submit" class="btn btn-primary">Zarezerwuj</button>
+        <button type="submit" class="btn btn-primary">Book now</button>
     </form>
-
+    <div class="card-text">
+    <h2>Reservation list</h2>
+        {% for reservation in reservations %}
+            <p>Booking date: {{ reservation.date }}</p>
+        {% endfor %}
+    </div>
 {% endblock %}

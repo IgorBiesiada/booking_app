@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Search Page{% endblock %}
+
+{% block container %}
+    <h1>Search</h1>
+
+    <form method="get" action="{% url 'rooms:room-search' %}">
+        <label for="capacity">Minimum number of seats:</label><br>
+        <input type="number" name="room_capacity" id="capacity" value="{{ selected_capacity|default_if_none:'' }}"><br>
+
+        <label for="projector">Projector availability</label>
+        <input type="checkbox" name="projector_available" id="projector" {% if projector_available == 'on' %}checked{% endif %}><br>
+
+        <button type="submit">Search</button>
+    </form>
+
+    <h2>Rooms available:</h2>
+        {% if available_rooms %}
+            <ul>
+            {% for room in available_rooms %}
+                <li>{{ room.room_name }} (Capacity: {{ room.room_capacity }})</li>
+            {% endfor %}
+            </ul>
+        {% else %}
+            <p>No rooms available.</p>
+        {% endif %}
+
+
+{% endblock %}

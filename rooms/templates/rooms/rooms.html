@@ -13,24 +13,43 @@
           </div>
           <div class="card-body">
             <h5 class="card-title">Liczba miejsc: {{ room.room_capacity }}</h5>
-            <p class="card-text"> Dostępność rzutnika: {{ room.projector_available|yesno:"Tak,Nie" }}</p>
+            <p class="card-text"> Dostępność rzutnika: {{ room.projector_available|yesno:"Yes,No" }}</p>
             <div class="d-grid gap-2 d-md-flex justify-content-md-end">
               <form method="post" action="{% url 'rooms:delete-room' room.id %}">
                   {% csrf_token %}
-                <button type="submit" class="btn btn-primary">Usuń</button>
+                <button type="submit" class="btn btn-primary">Delete</button>
                 </form>
                 <form method="get" action="{% url 'rooms:update-room' room.id %}">
                 {% csrf_token %}
-                <button type="submit" class="btn btn-primary">Edytuj</button>
+                <button type="submit" class="btn btn-primary">Edit</button>
                 </form>
                 <form method="get" action="{% url 'rooms:reservation' room.id %}">
                 {% csrf_token %}
-                <button type="submit" class="btn btn-primary">Rezerwacja</button>
+                <button type="submit" class="btn btn-primary">Reservation</button>
                 </form>
-          </div>
+            </div>
+                <div class="card-text">
+                        {% with reservations_today=False %}
+
+
+                            {% for reservation in reservations %}
+
+                                {% if reservation.date == today %}
+                                    <p>The room is occupied today</p>
+                                    {% with reservations_today=True %} {% endwith %}
+                                {% endif %}
+                            {% endfor %}
+
+
+                            {% if reservations_today == False %}
+                                <p>The room is free today</p>
+                            {% endif %}
+
+                    {% endwith %}
+                    </div>
           </div>
         </div>
     {% empty %}
-        <p>Brak pokoi do wyświetlenia.</p>
+        <p>There are no rooms to display.</p>
     {% endfor %}
 {% endblock %}
